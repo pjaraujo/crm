@@ -1,0 +1,134 @@
+entity Cluster {
+	name String required
+    ip String required 
+}
+
+entity Server {
+	ip String required
+    name String required
+    description String
+    dns String
+    storage BigDecimal
+    memory BigDecimal
+    cores Integer
+    status Boolean
+    so	String
+    login String
+    password String
+    observation TextBlob
+    cloud Boolean
+}
+
+entity AccessData {
+    ip String
+    domain String
+    login String
+    password String
+    observation TextBlob
+    software String
+    softwareURL String
+    softwareIP String
+    softwareLogin String
+    softwarePassword String
+    softwareObservation TextBlob
+}
+
+entity Application {
+	name String required,
+	version String required,
+	login String,
+	password String
+}
+
+entity Address {
+	phone String
+    mobile String
+    email String
+    website String
+    linkedin String
+    facebook String
+    youtube String
+    detail DetailedAddress
+}
+
+entity DetailedAddress{
+	street String
+    postalCode String
+    city String
+    district String
+    country String
+	latitude BigDecimal
+    longitude BigDecimal
+ 	kms BigDecimal
+    travellingTime ZonedDateTime
+}
+entity Contact{
+	nome String required
+   	address Address
+    position String
+}
+
+entity Client {
+	name String required
+    nif String
+    businessVolume BigDecimal
+	address Address
+}
+
+entity Contract{
+	number String required
+    billingType BillingType
+    paymentTerms PaymentTerms
+    status Boolean
+    startDate LocalDate
+    endDate LocalDate
+    value BigDecimal
+}
+
+
+entity Proposal{
+	name String required
+    finalDate LocalDate
+    number String
+    status ProposalStatus
+    value BigDecimal
+    probability Integer
+    driveURL String
+}
+enum ProposalStatus {
+    PRESENTED, ACCEPTED, FINISHED, DECLINED 
+}
+
+enum PaymentTerms {
+    DAYS30, DAYS60, DAYS90, DAYS120, READY_PAY
+}
+
+enum BillingType{
+	YEARLY, MONTHLY, SEMESTER, QUARTERLY
+}
+
+ 
+relationship ManyToMany {
+  Server{applications} to Application{servers}
+  Client{applications} to Application{clients}
+}
+
+relationship ManyToOne {
+  Server{cluster} to Cluster
+}
+
+relationship OneToMany {
+  Client{proposals} to Proposal{client}
+  Client{contracts} to Contract{client}
+  Client{contacts} to Contact{client}
+}
+
+relationship OneToOne {
+  AccessData{server} to Server{accessData}
+}
+
+
+filter *
+paginate * with pagination
+service * with serviceClass 
+
